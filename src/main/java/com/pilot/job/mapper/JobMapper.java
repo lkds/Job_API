@@ -54,7 +54,7 @@ public interface JobMapper {
      * @param city
      * @return
      */
-    @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` LIMIT #{t}")
+    @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` DESC LIMIT #{t}")
     List<Job> getTopJob(String province, int t);
 
     /**

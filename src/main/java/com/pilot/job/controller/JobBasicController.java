@@ -118,16 +118,24 @@ public class JobBasicController {
     public Result getJobEducation(@PathVariable("industry") String industry) {
         Result res = new Result();
         List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
-        List<Job> allJob = jm.getJobEducation(industry);
-        for (Job j : allJob) {
-            body.add(new HashMap<String, Object>() {
-                {
-                    put("post", j.getJeducation());
-                    put("number", j.getCount());
-                }
-            });
+        try {
+
+            List<Job> allJob = jm.getJobEducation(industry);
+            for (Job j : allJob) {
+                body.add(new HashMap<String, Object>() {
+                    {
+                        put("post", j.getJeducation());
+                        put("number", j.getCount());
+                    }
+                });
+            }
+            res.setStatus(1);
+            res.setMsg("success");
+            res.setBody(body);
+        } catch (Exception e) {
+            res.setMsg(e.toString());
         }
-        res.setBody(body);
+
         return res;
     }
 
@@ -213,18 +221,22 @@ public class JobBasicController {
 
     @RequestMapping("/areaJob/{province}")
     public Result getAreaJob(@PathVariable("province") String province) {
+        // TODO 去除其它
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(350);
         try {
             List<Job> allJob = jm.getTopJob(province, 5);
             ArrayList<String> topJobs = new ArrayList<>(5);
             ArrayList<Integer> jobCount = new ArrayList<>(5);
+            ArrayList<Double> jobRatio = new ArrayList<>(5);
             for (Job j : allJob) {
                 topJobs.add(j.getJindustry());
                 jobCount.add(j.getCount());
+                jobRatio.add(j.getRatio());
             }
             body.put("topJobs", topJobs);
             body.put("jobCount", jobCount);
+            body.put("jobRatio", jobRatio);
             res.setBody(body);
             res.setStatus(1);
             res.setMsg("success");
