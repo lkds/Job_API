@@ -20,4 +20,7 @@ public class Job {
     private double JavminSalary;
     private double JavSalary;
     private double JavmaxSalary;
+    private double count;
+    private double Ratio;
+    private String Jeducation;
 }
