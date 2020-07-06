@@ -22,4 +22,6 @@ public class Job {
     private double JavmaxSalary;
     private String Jrequirements;
     private int count;
+    private double Ratio;
+    private String Jeducation;
 }

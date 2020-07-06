@@ -65,4 +65,12 @@ public interface JobMapper {
      */
     @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType}")
     List<Job> getWordCloud(String jobType);
+
+    /**
+     * 获取不同岗位的学历要求
+     *
+     * @return 包含学历字典的数组
+     */
+    @Select("SELECT Jindustry,Jeducation,count,Ratio FROM Demand1_3 WHERE Jindustry=#{industry}")
+    List<Job> getJobEducation(String industry);
 }

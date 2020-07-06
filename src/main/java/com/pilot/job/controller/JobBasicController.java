@@ -67,9 +67,68 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/jobEducation")
-    public Result getJobEducation() {
-        return new Result();
+    // @RequestMapping("/jobEducation/{industry}")
+    // public Result getJobEducation(@PathVariable("industry") String industry) {
+    // int index;
+    // Result res = new Result();
+    // Map<String, Object> body = new HashMap<>(2);
+    // ArrayList<String> jobType = new ArrayList<String>();
+    // ArrayList<Map<String, ArrayList<Double>>> proportionDemand = new
+    // ArrayList<Map<String, ArrayList<Double>>>();
+    // try {
+    // List<Job> jobArr = jm.getJobEducation(industry);
+    // for (Job j : jobArr) {
+    // index = jobType.indexOf(j.getJindustry());
+    // if (index == -1) {
+    // Map<String, ArrayList<Double>> proDe = new HashMap<String,
+    // ArrayList<Double>>();
+    // ArrayList<Double> countAndRatio = new ArrayList<Double>();
+    // countAndRatio.add(j.getCount());
+    // countAndRatio.add(j.getRatio());
+    // proDe.put(j.getJeducation(), countAndRatio);
+    // jobType.add(j.getJindustry());
+    // proportionDemand.add(proDe);
+    // } else {
+    // ArrayList<Double> countAndRatio = new ArrayList<Double>();
+    // Map<String, ArrayList<Double>> proDe = proportionDemand.get(index);
+    // countAndRatio.add(j.getCount());
+    // countAndRatio.add(j.getRatio());
+    // proDe.put(j.getJeducation(), countAndRatio);
+    // proportionDemand.set(index, proDe);
+    // }
+    // }
+    // body.put("education", proportionDemand);
+    // res.setBody(body);
+    // res.setStatus(1);
+    // res.setMsg("success");
+    // }
+    // // catch (RecoverableDataAccessException e){
+    // // res.setMsg("数据库访问失败！");
+    // // }finally {
+    // // res.setMsg("未知错误！");
+    // // }
+    // catch (Exception e) {
+    // res.setMsg(e.toString());
+    // }
+
+    // return res;
+    // }
+
+    @RequestMapping("/jobEducation/{industry}")
+    public Result getJobEducation(@PathVariable("industry") String industry) {
+        Result res = new Result();
+        List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
+        List<Job> allJob = jm.getJobEducation(industry);
+        for (Job j : allJob) {
+            body.add(new HashMap<String, Object>() {
+                {
+                    put("post", j.getJeducation());
+                    put("number", j.getCount());
+                }
+            });
+        }
+        res.setBody(body);
+        return res;
     }
 
     @RequestMapping("/educationSalary")
