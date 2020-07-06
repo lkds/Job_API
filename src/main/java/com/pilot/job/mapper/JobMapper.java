@@ -49,6 +49,15 @@ public interface JobMapper {
     List<City> getAreaSalary();
 
     /**
+     * 获取每个地区的top行业
+     * 
+     * @param city
+     * @return
+     */
+    @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` LIMIT #{t}")
+    List<Job> getTopJob(String province, int t);
+
+    /**
      * 5-1 获取词云分布
      * 
      * @param jobType 职业类型

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pilot.job.entity.City;
 import com.pilot.job.entity.Company;
 import com.pilot.job.entity.Job;
 import com.pilot.job.entity.Result;
@@ -137,19 +138,11 @@ public class JobBasicController {
     public Result getAreaSalary() {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(350);
-        ArrayList<String> comType = new ArrayList<>();
-        ArrayList<Double> ration = new ArrayList<>();
-        ArrayList<Integer> count = new ArrayList<>();
         try {
-            List<Company> allCom = jm.getSalaryOfProp();
-            for (Company c : allCom) {
-                comType.add(c.getJcomType());
-                ration.add(c.getRadio());
-                count.add(c.getCount());
+            List<City> allCom = jm.getAreaSalary();
+            for (City c : allCom) {
+                body.put(c.getJcity(), c.getJavSalary());
             }
-            body.put("scale", comType);
-            body.put("ration", ration);
-            body.put("count", count);
             res.setBody(body);
             res.setStatus(1);
             res.setMsg("success");
@@ -159,9 +152,27 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/areaJob")
-    public Result getAreaJob() {
-        return new Result();
+    @RequestMapping("/areaJob/{province}")
+    public Result getAreaJob(@PathVariable("province") String province) {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(350);
+        try {
+            List<Job> allJob = jm.getTopJob(province, 5);
+            ArrayList<String> topJobs = new ArrayList<>(5);
+            ArrayList<Integer> jobCount = new ArrayList<>(5);
+            for (Job j : allJob) {
+                topJobs.add(j.getJindustry());
+                jobCount.add(j.getCount());
+            }
+            body.put("topJobs", topJobs);
+            body.put("jobCount", jobCount);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/jobCount")
