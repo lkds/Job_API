@@ -1,9 +1,6 @@
 package com.pilot.job.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.pilot.job.entity.City;
 import com.pilot.job.entity.Company;
@@ -136,8 +133,37 @@ public class JobBasicController {
 
     @RequestMapping("/expEduSalary")
     public Result getExpEduSalary() {
-        
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
+        List experience = Arrays.asList("不限","1","2","1-3","3-4","3-5","5-7","8-9","5-10");
+        Double [][] salary = new Double[7][9];
+        try {
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getExpEduSalary();
+            int x,y;
+            for (Job j : jobArr)
+            {
+                x=education.indexOf(j.getJeducation());
+                y=experience.indexOf(j.getJexperience());
+                if(x!=-1&&y!=-1)
+                    salary[x][y]=j.getJavSalary();
+            }
+            body.put("education", education);
+            body.put("experience", experience);
+            body.put("salary", salary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/salaryOfScale")

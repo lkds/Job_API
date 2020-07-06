@@ -87,6 +87,6 @@ public interface JobMapper {
      *
      * @return 三个字典
      */
-    @Select("SELECT Jexperience,Jeduction,JavSalary FROM Demand1_5")
+    @Select("SELECT Jexperience,Jeducation,JavSalary FROM Demand1_5")
     List<Job> getExpEduSalary();
 }
