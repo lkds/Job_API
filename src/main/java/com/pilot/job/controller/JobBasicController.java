@@ -64,15 +64,15 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/jobEducation")
-    public Result getJobEducation() {
+    @RequestMapping("/jobEducation/{industry}")
+    public Result getJobEducation(@PathVariable("industry") String industry) {
         int index;
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(2);
         ArrayList<String> jobType = new ArrayList<String>();
         ArrayList<Map<String,ArrayList<Double>>> proportionDemand = new ArrayList<Map<String,ArrayList<Double>>>();
         try {
-            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getJobEducation();
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getJobEducation(industry);
             for (Job j : jobArr) {
                 index=jobType.indexOf(j.getJindustry());
                 if(index==-1)
