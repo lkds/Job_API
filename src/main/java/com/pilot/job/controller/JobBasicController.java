@@ -110,7 +110,7 @@ public class JobBasicController {
     // }
 
     @RequestMapping("/jobEducation/{industry}")
-    public Result getJobEducation(@PathVariable("industry") String industry) {
+    public Result getJobEducation(@PathVariable String industry) {
         Result res = new Result();
         List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
         List<Job> allJob = jm.getJobEducation(industry);
@@ -126,9 +126,39 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/educationSalary")
-    public Result getEducationSalary() {
-        return new Result();
+    @RequestMapping("/educationSalary/{industry1}/{industry2}/{industry3}/{industry4}")
+    public Result getEducationSalary(@PathVariable String industry1, @PathVariable String industry2, @PathVariable String industry3, @PathVariable String industry4) {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
+        List industry = Arrays.asList(industry1,industry2,industry3,industry4);
+        Double [][] avgSalary = new Double[4][6];
+        try {
+            List<Job> jobArr = jm.getEducationSalary(industry1,industry2,industry3,industry4);
+            int x,y;
+            for (Job j : jobArr)
+            {
+                x=industry.indexOf(j.getJindustry());
+                y=education.indexOf(j.getJeducation());
+                if(x!=-1&&y!=-1)
+                    avgSalary[x][y]=j.getJavSalary()*1000;
+            }
+            body.put("education", education);
+            body.put("industry", industry);
+            body.put("avgSalary", avgSalary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/expEduSalary")
