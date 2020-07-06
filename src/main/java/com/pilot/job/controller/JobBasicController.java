@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pilot.job.entity.Company;
 import com.pilot.job.entity.Job;
 import com.pilot.job.entity.Result;
 import com.pilot.job.mapper.JobMapper;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +34,7 @@ public class JobBasicController {
     @RequestMapping("/averageSalary")
     public Result getAverageSalary() {
         Result res = new Result();
-        Map<String, Object> body = new HashMap<>(2);
+        Map<String, Object> body = new HashMap<>(10);
         ArrayList<String> jobType = new ArrayList<String>();
         ArrayList<Double> jobAvgSalary = new ArrayList<Double>();
         ArrayList<Double> jobMinSalary = new ArrayList<Double>();
@@ -52,13 +55,13 @@ public class JobBasicController {
             res.setStatus(1);
             res.setMsg("success");
         }
-//        catch (RecoverableDataAccessException e){
-//            res.setMsg("数据库访问失败！");
-//        }finally {
-//            res.setMsg("未知错误！");
-//        }
-        catch(Exception e){
-               res.setMsg(e.toString());
+        // catch (RecoverableDataAccessException e){
+        // res.setMsg("数据库访问失败！");
+        // }finally {
+        // res.setMsg("未知错误！");
+        // }
+        catch (Exception e) {
+            res.setMsg(e.toString());
         }
         return res;
     }
@@ -80,17 +83,80 @@ public class JobBasicController {
 
     @RequestMapping("/salaryOfScale")
     public Result getSalaryOfScale() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(10);
+        ArrayList<String> comSize = new ArrayList<>();
+        ArrayList<Double> ration = new ArrayList<>();
+        ArrayList<Integer> count = new ArrayList<>();
+        try {
+            List<Company> allCom = jm.getSalaryOfScale();
+            for (Company c : allCom) {
+                comSize.add(c.getJcomSize());
+                ration.add(c.getRadio());
+                count.add(c.getCount());
+            }
+            body.put("scale", comSize);
+            body.put("ration", ration);
+            body.put("count", count);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/salaryOfProp")
     public Result getSalaryOfProp() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(10);
+        ArrayList<String> comType = new ArrayList<>();
+        ArrayList<Double> ration = new ArrayList<>();
+        ArrayList<Integer> count = new ArrayList<>();
+        try {
+            List<Company> allCom = jm.getSalaryOfProp();
+            for (Company c : allCom) {
+                comType.add(c.getJcomType());
+                ration.add(c.getRadio());
+                count.add(c.getCount());
+            }
+            body.put("scale", comType);
+            body.put("ration", ration);
+            body.put("count", count);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/areaSalary")
     public Result getAreaSalary() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(350);
+        ArrayList<String> comType = new ArrayList<>();
+        ArrayList<Double> ration = new ArrayList<>();
+        ArrayList<Integer> count = new ArrayList<>();
+        try {
+            List<Company> allCom = jm.getSalaryOfProp();
+            for (Company c : allCom) {
+                comType.add(c.getJcomType());
+                ration.add(c.getRadio());
+                count.add(c.getCount());
+            }
+            body.put("scale", comType);
+            body.put("ration", ration);
+            body.put("count", count);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/areaJob")
@@ -103,9 +169,22 @@ public class JobBasicController {
         return new Result();
     }
 
-    @RequestMapping("/wordCloud")
-    public Result getWordCloud() {
-        return new Result();
+    @RequestMapping("/wordCloud/{jobType}")
+    public Result getWordCloud(@PathVariable("jobType") String jobType) {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(500);
+        try {
+            List<Job> allWords = jm.getWordCloud(jobType);
+            for (Job j : allWords) {
+                body.put(j.getJrequirements(), j.getCount());
+            }
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
 }

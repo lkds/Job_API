@@ -20,4 +20,6 @@ public class Job {
     private double JavminSalary;
     private double JavSalary;
     private double JavmaxSalary;
+    private String Jrequirements;
+    private int count;
 }
