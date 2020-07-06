@@ -1,7 +1,16 @@
 package com.pilot.job.controller;
 
-import com.pilot.job.entity.Result;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.pilot.job.entity.Job;
+import com.pilot.job.entity.Result;
+import com.pilot.job.mapper.JobMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/job")
 public class JobBasicController {
+    @Autowired
+    private JobMapper jm;
+
     @RequestMapping("/jobAmounts")
     public Result getJobAmounts() {
         return new Result();
@@ -18,7 +30,37 @@ public class JobBasicController {
 
     @RequestMapping("/averageSalary")
     public Result getAverageSalary() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>(2);
+        ArrayList<String> jobType = new ArrayList<String>();
+        ArrayList<Double> jobAvgSalary = new ArrayList<Double>();
+        ArrayList<Double> jobMinSalary = new ArrayList<Double>();
+        ArrayList<Double> jobMaxSalary = new ArrayList<Double>();
+        try {
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
+            for (Job j : jobArr) {
+                jobType.add(j.getJindustry());
+                jobAvgSalary.add(j.getJavSalary());
+                jobMinSalary.add(j.getJavminSalary());
+                jobMaxSalary.add(j.getJavmaxSalary());
+            }
+            body.put("jobType", jobType);
+            body.put("avgSalary", jobAvgSalary);
+            body.put("maxSalary", jobMaxSalary);
+            body.put("minSalary", jobMinSalary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+               res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/jobEducation")

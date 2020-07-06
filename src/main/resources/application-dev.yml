@@ -2,7 +2,7 @@ spring:
   datasource:
     username: pa
     password: 258258cqu
-    url: jdbc:mysql://47.113.123.159:3306/job_info
+    url: jdbc:mysql://47.113.123.159:3306/job_res
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     type: com.alibaba.druid.pool.DruidDataSource

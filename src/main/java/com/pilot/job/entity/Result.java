@@ -18,5 +18,6 @@ import lombok.ToString;
 public class Result {
     int status = 0;
     String msg;
-    private Map<String, Object> body = new HashMap<String, Object>();
+    // private Map<String, Object> body = new HashMap<String, Object>();
+    Object body;
 }
