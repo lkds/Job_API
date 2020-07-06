@@ -79,7 +79,7 @@ public interface JobMapper {
      *
      * @return 两个字典，第一个为行业，第二个为对应的需求人数
      */
-    @Select("SELECT Jindustry,Totalhirecount FROM Demand4_1 ORDER BY Totalhirecount")
+    @Select("SELECT Jindustry,Totalhirecount FROM Demand4_1 ORDER BY Totalhirecount DESC LIMIT 0,10")
     List<Job> getJobCount();
 
     /**
@@ -87,6 +87,6 @@ public interface JobMapper {
      *
      * @return 三个字典
      */
-    @Select("SELECT Jindustry,Totalhirecount FROM Demand4_1 ORDER BY Totalhirecount")
+    @Select("SELECT Jexperience,Jeduction,JavSalary FROM Demand1_5")
     List<Job> getExpEduSalary();
 }

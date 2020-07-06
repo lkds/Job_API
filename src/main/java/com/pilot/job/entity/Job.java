@@ -25,4 +25,5 @@ public class Job {
     private double Ratio;
     private String Jeducation;
     private int Totalhirecount;
+    private String Jexperience;
 }

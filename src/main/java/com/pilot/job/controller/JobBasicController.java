@@ -136,6 +136,7 @@ public class JobBasicController {
 
     @RequestMapping("/expEduSalary")
     public Result getExpEduSalary() {
+        
         return new Result();
     }
 
@@ -239,7 +240,7 @@ public class JobBasicController {
         ArrayList<String> jobType = new ArrayList<String>();
         ArrayList<Integer> hireCount = new ArrayList<Integer>();
         try {
-            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getJobCount();
             for (Job j : jobArr) {
                 jobType.add(j.getJindustry());
                 hireCount.add(j.getTotalhirecount());
