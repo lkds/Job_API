@@ -39,9 +39,9 @@ public class JobBasicController {
             ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
             for (Job j : jobArr) {
                 jobType.add(j.getJindustry());
-                jobAvgSalary.add(j.getJavSalary());
-                jobMinSalary.add(j.getJavminSalary());
-                jobMaxSalary.add(j.getJavmaxSalary());
+                jobAvgSalary.add(j.getJavSalary()*1000);
+                jobMinSalary.add(j.getJavminSalary()*1000);
+                jobMaxSalary.add(j.getJavmaxSalary()*1000);
             }
             body.put("jobType", jobType);
             body.put("avgSalary", jobAvgSalary);
@@ -146,7 +146,7 @@ public class JobBasicController {
                 x=education.indexOf(j.getJeducation());
                 y=experience.indexOf(j.getJexperience());
                 if(x!=-1&&y!=-1)
-                    salary[x][y]=j.getJavSalary();
+                    salary[x][y]=j.getJavSalary()*1000;
             }
             body.put("education", education);
             body.put("experience", experience);
@@ -225,7 +225,7 @@ public class JobBasicController {
         try {
             List<City> allCom = jm.getAreaSalary();
             for (City c : allCom) {
-                body.put(c.getJcity(), c.getJavSalary());
+                body.put(c.getJcity(), c.getJavSalary()*1000);
             }
             res.setBody(body);
             res.setStatus(1);
