@@ -20,8 +20,9 @@ public class Job {
     private double JavminSalary;
     private double JavSalary;
     private double JavmaxSalary;
-    private double count;
+    private String Jrequirements;
+    private int count;
     private double Ratio;
     private String Jeducation;
-    private String
+    private int Totalhirecount;
 }
