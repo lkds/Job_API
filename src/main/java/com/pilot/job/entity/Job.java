@@ -23,4 +23,5 @@ public class Job {
     private double count;
     private double Ratio;
     private String Jeducation;
+    private String
 }

@@ -29,4 +29,10 @@ public interface JobMapper {
      */
     @Select("SELECT Jindustry,Jeducation,count,Ratio FROM Demand1_3 WHERE Jindustry=#{industry}")
     List<Job> getJobEducation(String industry);
+
+    /**
+     * 获取不同行业需求的人数
+     *
+     * @return 包含学历字典的数组
+     */
 }

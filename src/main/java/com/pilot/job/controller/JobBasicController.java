@@ -109,7 +109,6 @@ public class JobBasicController {
         catch(Exception e){
             res.setMsg(e.toString());
         }
-
         return res;
     }
 
@@ -145,7 +144,36 @@ public class JobBasicController {
 
     @RequestMapping("/jobCount")
     public Result getJobCount() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        ArrayList<String> jobType = new ArrayList<String>();
+        ArrayList<Double> jobAvgSalary = new ArrayList<Double>();
+        ArrayList<Double> jobMinSalary = new ArrayList<Double>();
+        try {
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
+            for (Job j : jobArr) {
+                jobType.add(j.getJindustry());
+                jobAvgSalary.add(j.getJavSalary());
+                jobMinSalary.add(j.getJavminSalary());
+                jobMaxSalary.add(j.getJavmaxSalary());
+            }
+            body.put("jobType", jobType);
+            body.put("avgSalary", jobAvgSalary);
+            body.put("maxSalary", jobMaxSalary);
+            body.put("minSalary", jobMinSalary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/wordCloud")
