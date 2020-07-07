@@ -26,4 +26,5 @@ public class Job {
     private String Jeducation;
     private int Totalhirecount;
     private String Jexperience;
+    private  String Jprovince;
 }

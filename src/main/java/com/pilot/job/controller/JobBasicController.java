@@ -266,6 +266,56 @@ public class JobBasicController {
         return res;
     }
 
+    @RequestMapping("/twoProvinceCount/{province1}/{province2}")
+    public Result getTwoProvinceCount(@PathVariable String province1, @PathVariable String province2) {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        ArrayList<String> titleData = new ArrayList<String>();
+        titleData.add(province1);
+        titleData.add(province2);
+        ArrayList<Map<String,Object>> typeStander = new ArrayList<Map<String,Object>>();
+        ArrayList<Map<String,Object>> typeData = new ArrayList<Map<String,Object>>();
+        try {
+            List<Job> countArr = jm.getTwoProvinceCount(province1,province2);
+            ArrayList<String> industries = new ArrayList<String>();
+            for (Job j : countArr) {
+                if(!industries.contains(j.getJindustry()))
+                    industries.add(j.getJindustry());
+            }
+            for (String s : industries){
+                Map<String,Object> industry = new HashMap<String, Object>();
+                industry.put("name",s);
+                industry.put("max",200000);
+                typeStander.add(industry);
+            }
+            int [] value1 = new int[5];
+            int [] value2 = new int[5];
+            for (Job j : countArr) {
+                if(j.getJprovince().equals(province1))
+                    value1[industries.indexOf(j.getJindustry())]=j.getCount();
+                else if(j.getJprovince().equals(province2))
+                    value2[industries.indexOf(j.getJindustry())]=j.getCount();
+            }
+            Map<String,Object> v1 = new HashMap<String, Object>();
+            Map<String,Object> v2 = new HashMap<String, Object>();
+            v1.put("name",province1);
+            v1.put("value",value1);
+            v2.put("name",province2);
+            v2.put("value",value2);
+            typeData.add(v1);
+            typeData.add(v2);
+            body.put("titleData",titleData);
+            body.put("typeStander",typeStander);
+            body.put("typeData",typeData);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
+    }
+
     @RequestMapping("/areaJob/{province}")
     public Result getAreaJob(@PathVariable("province") String province) {
         Result res = new Result();
