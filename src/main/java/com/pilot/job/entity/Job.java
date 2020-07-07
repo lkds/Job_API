@@ -29,4 +29,5 @@ public class Job {
     private double JmaxSalary;
     private double JminSalary;
     private String Jcompany;
+    private String Jprovince;
 }

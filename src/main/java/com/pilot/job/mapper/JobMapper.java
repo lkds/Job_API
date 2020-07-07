@@ -98,4 +98,20 @@ public interface JobMapper {
      */
     @Select("SELECT Jname,Jcompany,Jminsalary,JmaxSalary FROM liepin ORDER BY JmaxSalary desc LIMIT #{total}")
     List<Job> getNewJob(int total);
+
+    /**
+     * 经验-学历-薪资关系
+     *
+     * @return 三个字典
+     */
+    @Select("SELECT Jindustry,Jeducation,JavSalary FROM Demand1_4 WHERE Jindustry=#{industry1} OR Jindustry=#{industry1} OR Jindustry=#{industry2} OR Jindustry=#{industry3} OR Jindustry=#{industry4}")
+    List<Job> getEducationSalary(String industry1, String industry2, String industry3, String industry4);
+
+    /**
+     * 两地区不同行业需求人数的比较
+     *
+     * @return 包含一个列表、一个嵌套字典的字典
+     */
+    @Select("SELECT Jprovince,Jindustry,Count FROM Demand3_2 WHERE Demand3_2.Jindustry IN (SELECT a.Jindustry FROM (SELECT * FROM Demand4_1 ORDER BY Totalhirecount DESC LIMIT 0,5)AS a) AND Jprovince IN (#{province1},#{province2})")
+    List<Job> getTwoProvinceCount(String province1, String province2);
 }
