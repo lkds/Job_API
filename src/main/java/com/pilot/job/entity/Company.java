@@ -9,11 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Company {
+public class Company implements Comparable<Company> {
     private String Jcompany;
     private String JcomSize;
     private int count;
     private double Radio;
     private double JavSalary;
     private String JcomType;
+
+    @Override
+    public int compareTo(Company o) {
+        return Double.compare(o.JavSalary,this.JavSalary);
+    }
 }
