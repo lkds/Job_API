@@ -11,17 +11,17 @@ import com.pilot.job.entity.Job;
 import com.pilot.job.entity.Result;
 import com.pilot.job.mapper.JobMapper;
 
-import com.sun.org.apache.regexp.internal.RE;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.RecoverableDataAccessException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author fnzs
  */
 @RestController
+@CrossOrigin()
+
 @RequestMapping("/job")
 public class JobBasicController {
     @Autowired
@@ -211,7 +211,7 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/areaJob/{province}")
+    @GetMapping("/areaJob/{province}")
     public Result getAreaJob(@PathVariable("province") String province) {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(350);
