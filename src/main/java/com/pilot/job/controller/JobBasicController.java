@@ -24,6 +24,8 @@ public class JobBasicController {
 
     @RequestMapping("/jobAmounts")
     public Result getJobAmounts() {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
         return new Result();
     }
 
@@ -143,18 +145,18 @@ public class JobBasicController {
     public Result getExpEduSalary() {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>();
-        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
-        List experience = Arrays.asList("不限","1","2","1-3","3-4","3-5","5-7","8-9","5-10");
-        Double [][] salary = new Double[7][9];
+        List education = Arrays.asList("初中", "高中", "大专", "本科", "硕士", "博士");
+        List experience = Arrays.asList("不限", "1", "2", "1-3", "3-4", "3-5", "5-7", "8-9", "5-10");
+        Double[][] salary = new Double[7][9];
         try {
-            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getExpEduSalary();
-            int x,y;
-            for (Job j : jobArr)
-            {
-                x=education.indexOf(j.getJeducation());
-                y=experience.indexOf(j.getJexperience());
-                if(x!=-1&&y!=-1)
-                    salary[x][y]=j.getJavSalary();
+            List<Job> jobArr = jm.getExpEduSalary();
+            int x, y;
+            for (Job j : jobArr) {
+                x = education.indexOf(j.getJeducation());
+                y = experience.indexOf(j.getJexperience());
+                if (x != -1 && y != -1) {
+                    salary[x][y] = j.getJavSalary();
+                }
             }
             body.put("education", education);
             body.put("experience", experience);
@@ -163,12 +165,12 @@ public class JobBasicController {
             res.setStatus(1);
             res.setMsg("success");
         }
-//        catch (RecoverableDataAccessException e){
-//            res.setMsg("数据库访问失败！");
-//        }finally {
-//            res.setMsg("未知错误！");
-//        }
-        catch(Exception e){
+        // catch (RecoverableDataAccessException e){
+        // res.setMsg("数据库访问失败！");
+        // }finally {
+        // res.setMsg("未知错误！");
+        // }
+        catch (Exception e) {
             res.setMsg(e.toString());
         }
         return res;
@@ -181,12 +183,14 @@ public class JobBasicController {
         ArrayList<String> comSize = new ArrayList<>();
         ArrayList<Double> ration = new ArrayList<>();
         ArrayList<Integer> count = new ArrayList<>();
+        ArrayList<Double> salary = new ArrayList<>();
         try {
             List<Company> allCom = jm.getSalaryOfScale();
             for (Company c : allCom) {
                 comSize.add(c.getJcomSize());
                 ration.add(c.getRadio());
                 count.add(c.getCount());
+                salary.add(c.getJavSalary());
             }
             body.put("scale", comSize);
             body.put("ration", ration);
@@ -207,12 +211,14 @@ public class JobBasicController {
         ArrayList<String> comType = new ArrayList<>();
         ArrayList<Double> ration = new ArrayList<>();
         ArrayList<Integer> count = new ArrayList<>();
+        ArrayList<Double> salary = new ArrayList<>();
         try {
             List<Company> allCom = jm.getSalaryOfProp();
             for (Company c : allCom) {
                 comType.add(c.getJcomType());
                 ration.add(c.getRadio());
                 count.add(c.getCount());
+                salary.add(c.getJavSalary());
             }
             body.put("scale", comType);
             body.put("ration", ration);
@@ -289,12 +295,12 @@ public class JobBasicController {
             res.setStatus(1);
             res.setMsg("success");
         }
-//        catch (RecoverableDataAccessException e){
-//            res.setMsg("数据库访问失败！");
-//        }finally {
-//            res.setMsg("未知错误！");
-//        }
-        catch(Exception e){
+        // catch (RecoverableDataAccessException e){
+        // res.setMsg("数据库访问失败！");
+        // }finally {
+        // res.setMsg("未知错误！");
+        // }
+        catch (Exception e) {
             res.setMsg(e.toString());
         }
         return res;
@@ -312,6 +318,35 @@ public class JobBasicController {
             res.setBody(body);
             res.setStatus(1);
             res.setMsg("success");
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
+    }
+
+    /**
+     * 获取最新职业信息
+     * 
+     * @return
+     */
+    @RequestMapping("/newJobs/{total}")
+    public Result getNewJob(@PathVariable("total") int total) {
+        Result res = new Result();
+        List<Map<String, Object>> body = new ArrayList<Map<String, Object>>(total);
+        try {
+            List<Job> allJobs = jm.getNewJob(total);
+            for (Job j : allJobs) {
+                body.add(new HashMap<String, Object>(3) {
+                    {
+                        put("职位", j.getJname());
+                        put("公司", j.getJcompany());
+                        put("薪资", (j.getJminSalary() + j.getJavmaxSalary()) * 500);
+                    }
+                });
+            }
+            res.setBody(body);
+            res.setMsg("success");
+            res.setStatus(1);
         } catch (Exception e) {
             res.setMsg(e.toString());
         }

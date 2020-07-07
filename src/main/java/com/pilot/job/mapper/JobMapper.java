@@ -63,7 +63,7 @@ public interface JobMapper {
      * @param jobType 职业类型
      * @return Job列表
      */
-    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType}")
+    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc")
     List<Job> getWordCloud(String jobType);
 
     /**
@@ -89,4 +89,13 @@ public interface JobMapper {
      */
     @Select("SELECT Jexperience,Jeducation,JavSalary FROM Demand1_5")
     List<Job> getExpEduSalary();
+
+    /**
+     * 获取高薪互联网职业
+     * 
+     * @param total 获取的条数
+     * @return 职业列表
+     */
+    @Select("SELECT Jname,Jcompany,Jminsalary,JmaxSalary FROM liepin ORDER BY JmaxSalary desc LIMIT #{total}")
+    List<Job> getNewJob(int total);
 }
