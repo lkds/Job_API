@@ -166,17 +166,33 @@ public class JobBasicController {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>();
         List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
-        List experience = Arrays.asList("不限","1","2","1-3","3-4","3-5","5-7","8-9","5-10");
-        Double [][] salary = new Double[7][9];
+        List experience = Arrays.asList("0","1","1-3","3-5","8-9","5-10");
+        ArrayList<ArrayList<Object>> salary = new ArrayList<ArrayList<Object>>();
+        for(int i=0;i<6;i++)
+        {
+            for(int j=0;j<6;j++)
+            {
+                ArrayList<Object> a = new ArrayList<Object>();
+                a.add(i);
+                a.add(j);
+                a.add(0);
+                salary.add(a);
+            }
+        }
         try {
             ArrayList<Job> jobArr = (ArrayList<Job>) jm.getExpEduSalary();
-            int x,y;
+            int x,y,index;
             for (Job j : jobArr)
             {
                 x=education.indexOf(j.getJeducation());
                 y=experience.indexOf(j.getJexperience());
-                if(x!=-1&&y!=-1) {
-                    salary[x][y]=j.getJavSalary()*1000;
+                if(x!=-1&&y!=-1)
+                {
+                    index=x*6+y;
+                    ArrayList<Object> a = new ArrayList<Object>();
+                    a=salary.get(index);
+                    a.set(2,j.getJavSalary()*1000);
+                    salary.set(index,a);
                 }
             }
             body.put("education", education);
