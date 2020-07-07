@@ -1,17 +1,12 @@
 package com.pilot.job.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.pilot.job.entity.City;
 import com.pilot.job.entity.Company;
 import com.pilot.job.entity.Job;
 import com.pilot.job.entity.Result;
 import com.pilot.job.mapper.JobMapper;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author fnzs
  */
+@CrossOrigin
 @RestController
-@CrossOrigin()
-
 @RequestMapping("/job")
 public class JobBasicController {
     @Autowired
@@ -44,9 +38,9 @@ public class JobBasicController {
             ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
             for (Job j : jobArr) {
                 jobType.add(j.getJindustry());
-                jobAvgSalary.add(j.getJavSalary());
-                jobMinSalary.add(j.getJavminSalary());
-                jobMaxSalary.add(j.getJavmaxSalary());
+                jobAvgSalary.add(j.getJavSalary()*1000);
+                jobMinSalary.add(j.getJavminSalary()*1000);
+                jobMaxSalary.add(j.getJavmaxSalary()*1000);
             }
             body.put("jobType", jobType);
             body.put("avgSalary", jobAvgSalary);
@@ -131,14 +125,76 @@ public class JobBasicController {
         return res;
     }
 
-    @RequestMapping("/educationSalary")
-    public Result getEducationSalary() {
-        return new Result();
+    @RequestMapping("/educationSalary/{industry1}/{industry2}/{industry3}/{industry4}")
+    public Result getEducationSalary(@PathVariable String industry1, @PathVariable String industry2, @PathVariable String industry3, @PathVariable String industry4) {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
+        List industry = Arrays.asList(industry1,industry2,industry3,industry4);
+        Double [][] avgSalary = new Double[4][6];
+        try {
+            List<Job> jobArr = jm.getEducationSalary(industry1,industry2,industry3,industry4);
+            int x,y;
+            for (Job j : jobArr)
+            {
+                x=industry.indexOf(j.getJindustry());
+                y=education.indexOf(j.getJeducation());
+                if(x!=-1&&y!=-1) {
+                    avgSalary[x][y]=j.getJavSalary()*1000;
+                }
+            }
+            body.put("education", education);
+            body.put("industry", industry);
+            body.put("avgSalary", avgSalary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/expEduSalary")
     public Result getExpEduSalary() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
+        List experience = Arrays.asList("不限","1","2","1-3","3-4","3-5","5-7","8-9","5-10");
+        Double [][] salary = new Double[7][9];
+        try {
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getExpEduSalary();
+            int x,y;
+            for (Job j : jobArr)
+            {
+                x=education.indexOf(j.getJeducation());
+                y=experience.indexOf(j.getJexperience());
+                if(x!=-1&&y!=-1) {
+                    salary[x][y]=j.getJavSalary()*1000;
+                }
+            }
+            body.put("education", education);
+            body.put("experience", experience);
+            body.put("salary", salary);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/salaryOfScale")
@@ -200,7 +256,7 @@ public class JobBasicController {
         try {
             List<City> allCom = jm.getAreaSalary();
             for (City c : allCom) {
-                body.put(c.getJcity(), c.getJavSalary());
+                body.put(c.getJcity(), c.getJavSalary()*1000);
             }
             res.setBody(body);
             res.setStatus(1);
@@ -236,7 +292,31 @@ public class JobBasicController {
 
     @RequestMapping("/jobCount")
     public Result getJobCount() {
-        return new Result();
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<>();
+        ArrayList<String> jobType = new ArrayList<String>();
+        ArrayList<Integer> hireCount = new ArrayList<Integer>();
+        try {
+            ArrayList<Job> jobArr = (ArrayList<Job>) jm.getJobCount();
+            for (Job j : jobArr) {
+                jobType.add(j.getJindustry());
+                hireCount.add(j.getTotalhirecount());
+            }
+            body.put("jobType", jobType);
+            body.put("hireCount", hireCount);
+            res.setBody(body);
+            res.setStatus(1);
+            res.setMsg("success");
+        }
+//        catch (RecoverableDataAccessException e){
+//            res.setMsg("数据库访问失败！");
+//        }finally {
+//            res.setMsg("未知错误！");
+//        }
+        catch(Exception e){
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/wordCloud/{jobType}")
