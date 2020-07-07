@@ -129,8 +129,8 @@ public class JobBasicController {
     public Result getEducationSalary(@PathVariable String industry1, @PathVariable String industry2, @PathVariable String industry3, @PathVariable String industry4) {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>();
-        List education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
-        List industry = Arrays.asList(industry1,industry2,industry3,industry4);
+        List<String> education = Arrays.asList("初中","高中","大专","本科","硕士","博士");
+        List<String> industry = Arrays.asList(industry1,industry2,industry3,industry4);
         Double [][] avgSalary = new Double[4][6];
         try {
             List<Job> jobArr = jm.getEducationSalary(industry1,industry2,industry3,industry4);
@@ -202,18 +202,23 @@ public class JobBasicController {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(10);
         ArrayList<String> comSize = new ArrayList<>();
-        ArrayList<Double> ration = new ArrayList<>();
+        ArrayList<Double> ratio = new ArrayList<>();
+        ArrayList<Double> JavSalary= new ArrayList<>();
         ArrayList<Integer> count = new ArrayList<>();
         try {
             List<Company> allCom = jm.getSalaryOfScale();
+            //排序
+            Collections.sort(allCom);
             for (Company c : allCom) {
                 comSize.add(c.getJcomSize());
-                ration.add(c.getRadio());
+                ratio.add(c.getRadio());
                 count.add(c.getCount());
+                JavSalary.add(c.getJavSalary()*1000);
             }
             body.put("scale", comSize);
-            body.put("ration", ration);
+            body.put("ratio", ratio);
             body.put("count", count);
+            body.put("JavSalary",JavSalary);
             res.setBody(body);
             res.setStatus(1);
             res.setMsg("success");
@@ -227,19 +232,26 @@ public class JobBasicController {
     public Result getSalaryOfProp() {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>(10);
+
         ArrayList<String> comType = new ArrayList<>();
-        ArrayList<Double> ration = new ArrayList<>();
+        ArrayList<Double> ratio = new ArrayList<>();
         ArrayList<Integer> count = new ArrayList<>();
+        ArrayList<Map<String,Object>> data = new ArrayList<>();
         try {
             List<Company> allCom = jm.getSalaryOfProp();
             for (Company c : allCom) {
                 comType.add(c.getJcomType());
-                ration.add(c.getRadio());
+                ratio.add(c.getRadio());
                 count.add(c.getCount());
+                Map<String,Object> map = new HashMap<>();
+                map.put("name",c.getJcomType());
+                map.put("value",c.getCount());
+                data.add(map);
             }
-            body.put("scale", comType);
-            body.put("ration", ration);
+            body.put("companyType", comType);
+            body.put("ration", ratio);
             body.put("count", count);
+            body.put("data", data);
             res.setBody(body);
             res.setStatus(1);
             res.setMsg("success");
@@ -252,11 +264,15 @@ public class JobBasicController {
     @RequestMapping("/areaSalary")
     public Result getAreaSalary() {
         Result res = new Result();
-        Map<String, Object> body = new HashMap<>(350);
+        List<Map<String, Object>> body = new ArrayList<>();
         try {
             List<City> allCom = jm.getAreaSalary();
             for (City c : allCom) {
-                body.put(c.getJcity(), c.getJavSalary()*1000);
+
+                Map<String, Object> map = new HashMap<>(2);
+                map.put("name", c.getJcity());
+                map.put("value", c.getJavSalary()*1000);
+                body.add(map);
             }
             res.setBody(body);
             res.setStatus(1);
@@ -322,11 +338,16 @@ public class JobBasicController {
     @RequestMapping("/wordCloud/{jobType}")
     public Result getWordCloud(@PathVariable("jobType") String jobType) {
         Result res = new Result();
-        Map<String, Object> body = new HashMap<>(500);
+
+        List< Map<String, Object>> body = new ArrayList<>();
         try {
+
             List<Job> allWords = jm.getWordCloud(jobType);
             for (Job j : allWords) {
-                body.put(j.getJrequirements(), j.getCount());
+                Map<String, Object> map = new HashMap<>(2);
+                map.put("name", j.getJrequirements());
+                map.put("value", j.getCount());
+                body.add(map);
             }
             res.setBody(body);
             res.setStatus(1);
