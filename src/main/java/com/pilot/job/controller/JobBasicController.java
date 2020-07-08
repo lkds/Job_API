@@ -532,7 +532,7 @@ public class JobBasicController {
             List<Double> salary = new ArrayList<>(20);
             for (Job j : allJobs) {
                 language.add(j.getJname());
-                salary.add(new BigDecimal(j.getJavSalary()).setScale(2, 1).doubleValue());
+                salary.add(new BigDecimal(j.getJavSalary()).setScale(3, 1).doubleValue() * 1000);
             }
             body.put("language", language);
             body.put("salary", salary);
@@ -540,6 +540,8 @@ public class JobBasicController {
             res.setMsg(e.toString());
         }
         res.setBody(body);
+        res.setMsg("success");
+        res.setStatus(1);
         return res;
     }
 }
