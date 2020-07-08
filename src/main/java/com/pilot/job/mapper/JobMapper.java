@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface JobMapper {
+
+    @Select("SELECT JtypeFather,JtypeNow,count FROM Demand1_1_2")
+    List<Job> getJobAmounts();
+
     /**
      * 获取不同行业的平均薪资
      * 

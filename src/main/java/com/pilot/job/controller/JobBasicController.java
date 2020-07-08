@@ -23,9 +23,21 @@ public class JobBasicController {
 
     @RequestMapping("/jobAmounts")
     public Result getJobAmounts() {
+        String color[] = { "#da0d68", "#975e6d", "#e0719c", "#f99e1c", "#ef5a78", "#f7f1bd", "#da1d23", "#dd4c51",
+                "#3e0317" };
         Result res = new Result();
-        Map<String, Object> body = new HashMap<>();
-        return new Result();
+        List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
+        List<Job> allJobs = jm.getJobAmounts();
+        try {
+            for (Job j : allJobs) {
+                if (j.getJtypeFather().equals("所有")) {
+
+                }
+            }
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        return res;
     }
 
     @RequestMapping("/averageSalary")
@@ -113,17 +125,54 @@ public class JobBasicController {
     @RequestMapping("/jobEducation/{industry}")
     public Result getJobEducation(@PathVariable("industry") String industry) {
         Result res = new Result();
-        List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> body = new ArrayList<Map<String, Object>>() {
+            {
+                add(new HashMap<String, Object>());
+                add(new HashMap<String, Object>());
+                add(new HashMap<String, Object>());
+                add(new HashMap<String, Object>());
+            }
+        };
         try {
 
             List<Job> allJob = jm.getJobEducation(industry);
             for (Job j : allJob) {
-                body.add(new HashMap<String, Object>() {
-                    {
-                        put("post", j.getJeducation());
-                        put("number", j.getCount());
-                    }
-                });
+                String edu = j.getJeducation();
+                switch (edu) {
+                    case "高中":
+                        body.set(0, new HashMap<String, Object>() {
+                            {
+                                put("post", j.getJeducation());
+                                put("number", j.getCount());
+                            }
+                        });
+                        break;
+                    case "大专":
+                        body.set(1, new HashMap<String, Object>() {
+                            {
+                                put("post", j.getJeducation());
+                                put("number", j.getCount());
+                            }
+                        });
+                        break;
+                    case "本科":
+                        body.set(2, new HashMap<String, Object>() {
+                            {
+                                put("post", j.getJeducation());
+                                put("number", j.getCount());
+                            }
+                        });
+                        break;
+                    case "硕士":
+                        body.set(3, new HashMap<String, Object>() {
+                            {
+                                put("post", j.getJeducation());
+                                put("number", j.getCount());
+                            }
+                        });
+                        break;
+                    default:
+                }
             }
             res.setStatus(1);
             res.setMsg("success");

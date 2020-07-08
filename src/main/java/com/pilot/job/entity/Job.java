@@ -30,4 +30,6 @@ public class Job {
     private double JminSalary;
     private String Jcompany;
     private String Jprovince;
+    private String JtypeFather;
+    private String JtypeNow;
 }
