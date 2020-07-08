@@ -20,23 +20,41 @@ import org.springframework.web.bind.annotation.*;
 public class JobBasicController {
     @Autowired
     private JobMapper jm;
+    String color[] = { "#da0d68", "#975e6d", "#e0719c", "#f99e1c", "#ef5a78", "#f7f1bd", "#da1d23", "#dd4c51",
+            "#3e0317" };
+    int currColor = 0;
+
+    public List<Map<String, Object>> reBuild(List<Job> allJob, String father) {
+        List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
+        for (Job j : allJob) {
+            Map<String, Object> m = new HashMap<>();
+            if (j.getJtypeFather().equals(father)) {
+                m.put("name", j.getJtypeNow());
+                m.put("itemStyle", color[(currColor++) % color.length]);
+                m.put("value", j.getCount());
+                List<Map<String, Object>> res = reBuild(allJob, j.getJtypeNow());
+                if (res.size() > 0) {
+                    m.put("children", res);
+                }
+                l.add(m);
+            }
+        }
+        return l;
+    }
 
     @RequestMapping("/jobAmounts")
     public Result getJobAmounts() {
-        String color[] = { "#da0d68", "#975e6d", "#e0719c", "#f99e1c", "#ef5a78", "#f7f1bd", "#da1d23", "#dd4c51",
-                "#3e0317" };
         Result res = new Result();
         List<Map<String, Object>> body = new ArrayList<Map<String, Object>>();
         List<Job> allJobs = jm.getJobAmounts();
         try {
-            for (Job j : allJobs) {
-                if (j.getJtypeFather().equals("所有")) {
-
-                }
-            }
+            body = this.reBuild(allJobs, "所有");
+            res.setMsg("success");
+            res.setStatus(1);
         } catch (Exception e) {
             res.setMsg(e.toString());
         }
+        res.setBody(body);
         return res;
     }
 
@@ -539,6 +557,83 @@ public class JobBasicController {
         } catch (Exception e) {
             res.setMsg(e.toString());
         }
+        res.setBody(body);
+        res.setMsg("success");
+        res.setStatus(1);
+        return res;
+    }
+
+    /**
+     * 获取互联网职位数量
+     * 
+     * @return 结果
+     */
+    @RequestMapping("/internetAmounts")
+    public Result getInternetAmounts() {
+        Result res = new Result();
+        List<Job> allJobs = jm.getJobAmounts();
+        Map<String, Object> body = new HashMap<String, Object>();
+        List<Map<String, Object>> l1 = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> l2 = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> l3 = new ArrayList<Map<String, Object>>();
+        for (Job j : allJobs) {
+            if (j.getJtypeFather().equals("所有")) {
+                l1.add(new HashMap<String, Object>() {
+                    {
+                        put("name", j.getJtypeNow());
+                        put("value", j.getCount());
+                    }
+                });
+            }
+        }
+        int i = 0;
+        for (; i < l1.size(); ++i) {
+            boolean find = false;
+            for (Job j : allJobs) {
+                if (j.getJtypeFather().equals(l1.get(i).get("name"))) {
+                    find = true;
+                    l2.add(new HashMap<String, Object>() {
+                        {
+                            put("name", j.getJtypeNow());
+                            put("value", j.getCount());
+                        }
+                    });
+                }
+            }
+            if (!find) {
+                l2.add(new HashMap<String, Object>() {
+                    {
+                        put("name", l1.get(i).get("name"));
+                        put("value", l1.get(i).get("value"));
+                    }
+                });
+            }
+        }
+        for (i = 0; i < l1.size(); ++i) {
+            boolean find = false;
+            for (Job j : allJobs) {
+                if (j.getJtypeFather().equals(l1.get(i).get("name"))) {
+                    find = true;
+                    l3.add(new HashMap<String, Object>() {
+                        {
+                            put("name", j.getJtypeNow());
+                            put("value", j.getCount());
+                        }
+                    });
+                }
+            }
+            if (!find) {
+                l3.add(new HashMap<String, Object>() {
+                    {
+                        put("name", l1.get(i).get("name"));
+                        put("value", l1.get(i).get("value"));
+                    }
+                });
+            }
+        }
+        body.put("first", l1);
+        body.put("second", l2);
+        body.put("third", l3);
         res.setBody(body);
         res.setMsg("success");
         res.setStatus(1);
