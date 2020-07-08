@@ -1,5 +1,6 @@
 package com.pilot.job.controller;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.pilot.job.entity.City;
@@ -8,7 +9,6 @@ import com.pilot.job.entity.Job;
 import com.pilot.job.entity.Result;
 import com.pilot.job.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -40,9 +40,9 @@ public class JobBasicController {
             ArrayList<Job> jobArr = (ArrayList<Job>) jm.getAverageSalary();
             for (Job j : jobArr) {
                 jobType.add(j.getJindustry());
-                jobAvgSalary.add(j.getJavSalary() * 1000);
-                jobMinSalary.add(j.getJavminSalary() * 1000);
-                jobMaxSalary.add(j.getJavmaxSalary() * 1000);
+                jobAvgSalary.add(new BigDecimal(j.getJavSalary() * 1000).setScale(2, 1).doubleValue());
+                jobMinSalary.add(new BigDecimal(j.getJavminSalary() * 1000).setScale(2, 1).doubleValue());
+                jobMaxSalary.add(new BigDecimal(j.getJavmaxSalary() * 1000).setScale(2, 1).doubleValue());
             }
             body.put("jobType", jobType);
             body.put("avgSalary", jobAvgSalary);
@@ -150,7 +150,7 @@ public class JobBasicController {
                 x = industry.indexOf(j.getJindustry());
                 y = education.indexOf(j.getJeducation());
                 if (x != -1 && y != -1) {
-                    avgSalary[x][y] = j.getJavSalary() * 1000;
+                    avgSalary[x][y] = new BigDecimal(j.getJavSalary() * 1000).setScale(2, 1).doubleValue();
                 }
             }
             body.put("education", education);
@@ -197,7 +197,7 @@ public class JobBasicController {
                     index = x * 6 + y;
                     ArrayList<Object> a = new ArrayList<Object>();
                     a = salary.get(index);
-                    a.set(2, j.getJavSalary() * 1000);
+                    a.set(2, new BigDecimal(j.getJavSalary() * 1000).setScale(2, 1).doubleValue());
                     salary.set(index, a);
                 }
             }
@@ -236,7 +236,7 @@ public class JobBasicController {
                 comSize.add(c.getJcomSize());
                 ratio.add(c.getRadio());
                 count.add(c.getCount());
-                JavSalary.add(c.getJavSalary() * 1000);
+                JavSalary.add(new BigDecimal(c.getJavSalary() * 1000).setScale(2, 1).doubleValue());
             }
             body.put("scale", comSize);
             body.put("ratio", ratio);
@@ -294,7 +294,7 @@ public class JobBasicController {
 
                 Map<String, Object> map = new HashMap<>(2);
                 map.put("name", c.getJcity());
-                map.put("value", c.getJavSalary() * 1000);
+                map.put("value", new BigDecimal(c.getJavSalary() * 1000).setScale(2, 1).doubleValue());
                 body.add(map);
             }
             res.setBody(body);
@@ -326,7 +326,7 @@ public class JobBasicController {
             for (String s : industries) {
                 Map<String, Object> industry = new HashMap<String, Object>();
                 industry.put("name", s);
-                industry.put("max", 200000);
+                industry.put("max", 10000);
                 typeStander.add(industry);
             }
             int[] value1 = new int[5];
@@ -421,7 +421,7 @@ public class JobBasicController {
         List<Map<String, Object>> body = new ArrayList<>();
         try {
 
-            List<Job> allWords = jm.getWordCloud(jobType);
+            List<Job> allWords = jm.getWordCloud(jobType, 200);
             for (Job j : allWords) {
                 Map<String, Object> map = new HashMap<>(2);
                 map.put("name", j.getJrequirements());
@@ -451,9 +451,10 @@ public class JobBasicController {
             for (Job j : allJobs) {
                 body.add(new HashMap<String, Object>(3) {
                     {
-                        put("职位", j.getJname());
-                        put("公司", j.getJcompany());
-                        put("薪资", (j.getJminSalary() + j.getJavmaxSalary()) * 500);
+                        put("name", j.getJname());
+                        put("company", j.getJcompany());
+                        put("salary", new BigDecimal((j.getJminSalary() + j.getJavmaxSalary()) * 500).setScale(2, 1)
+                                .doubleValue());
                     }
                 });
             }
@@ -466,4 +467,30 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 获取语言排行
+     * 
+     * @return
+     */
+    @RequestMapping("/languageRank")
+    public Result getLanguageRank() {
+        Result res = new Result();
+        Map<String, Object> body = new HashMap<String, Object>(2);
+        try {
+            List<Job> allJobs = jm.getLanguageRank();
+
+            List<String> language = new ArrayList<>(20);
+            List<Double> salary = new ArrayList<>(20);
+            for (Job j : allJobs) {
+                language.add(j.getJname());
+                salary.add(new BigDecimal(j.getJavSalary()).setScale(2, 1).doubleValue());
+            }
+            body.put("language", language);
+            body.put("salary", salary);
+        } catch (Exception e) {
+            res.setMsg(e.toString());
+        }
+        res.setBody(body);
+        return res;
+    }
 }

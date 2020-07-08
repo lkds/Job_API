@@ -63,8 +63,8 @@ public interface JobMapper {
      * @param jobType 职业类型
      * @return Job列表
      */
-    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc")
-    List<Job> getWordCloud(String jobType);
+    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc LIMIT #{total}")
+    List<Job> getWordCloud(String jobType, int total);
 
     /**
      * 获取不同岗位的学历要求
@@ -96,7 +96,7 @@ public interface JobMapper {
      * @param total 获取的条数
      * @return 职业列表
      */
-    @Select("SELECT Jname,Jcompany,Jminsalary,JmaxSalary FROM liepin ORDER BY JmaxSalary desc LIMIT #{total}")
+    @Select("SELECT Jname,Jcompany,Jminsalary,JmaxSalary FROM lagoujob ORDER BY JmaxSalary desc LIMIT #{total}")
     List<Job> getNewJob(int total);
 
     /**
@@ -114,4 +114,12 @@ public interface JobMapper {
      */
     @Select("SELECT Jprovince,Jindustry,Count FROM Demand3_2 WHERE Demand3_2.Jindustry IN (SELECT a.Jindustry FROM (SELECT * FROM Demand4_1 ORDER BY Totalhirecount DESC LIMIT 0,5)AS a) AND Jprovince IN (#{province1},#{province2})")
     List<Job> getTwoProvinceCount(String province1, String province2);
+
+    /**
+     * 获取各种语言的平均薪资
+     * 
+     * @return Job列表
+     */
+    @Select("SELECT Jname,JavSalary FROM Demand1_6 ORDER BY JavSalary desc")
+    List<Job> getLanguageRank();
 }
