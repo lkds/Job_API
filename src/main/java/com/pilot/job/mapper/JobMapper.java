@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface JobMapper {
+
+    @Select("SELECT JtypeFather,JtypeNow,count FROM Demand1_1_2")
+    List<Job> getJobAmounts();
+
     /**
      * 获取不同行业的平均薪资
      * 
@@ -37,7 +41,7 @@ public interface JobMapper {
      * 
      * @return 公司列表
      */
-    @Select("SELECT JcomType,count,Radio,JavSalary FROM Demand2_2")
+    @Select("SELECT JcomFinanceStage,count,JavSalary FROM Demand2_2")
     List<Company> getSalaryOfProp();
 
     /**
@@ -51,10 +55,10 @@ public interface JobMapper {
     /**
      * 获取每个地区的top行业
      * 
-     * @param city
+     * @param province
      * @return
      */
-    @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` LIMIT #{t}")
+    @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` DESC LIMIT #{t}")
     List<Job> getTopJob(String province, int t);
 
     /**
@@ -63,8 +67,8 @@ public interface JobMapper {
      * @param jobType 职业类型
      * @return Job列表
      */
-    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType}")
-    List<Job> getWordCloud(String jobType);
+    @Select("SELECT Jindustry,Jname,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc LIMIT #{total}")
+    List<Job> getWordCloud(String jobType, int total);
 
     /**
      * 获取不同岗位的学历要求
@@ -91,6 +95,15 @@ public interface JobMapper {
     List<Job> getExpEduSalary();
 
     /**
+     * 获取高薪互联网职业
+     * 
+     * @param total 获取的条数
+     * @return 职业列表
+     */
+    @Select("SELECT Jname,Jcompany,Jminsalary,JmaxSalary FROM lagoujob ORDER BY JmaxSalary desc LIMIT #{total}")
+    List<Job> getNewJob(int total);
+
+    /**
      * 经验-学历-薪资关系
      *
      * @return 三个字典
@@ -105,4 +118,12 @@ public interface JobMapper {
      */
     @Select("SELECT Jprovince,Jindustry,Count FROM Demand3_2 WHERE Demand3_2.Jindustry IN (SELECT a.Jindustry FROM (SELECT * FROM Demand4_1 ORDER BY Totalhirecount DESC LIMIT 0,5)AS a) AND Jprovince IN (#{province1},#{province2})")
     List<Job> getTwoProvinceCount(String province1, String province2);
+
+    /**
+     * 获取各种语言的平均薪资
+     * 
+     * @return Job列表
+     */
+    @Select("SELECT Jname,JavSalary FROM Demand1_6 ORDER BY JavSalary desc")
+    List<Job> getLanguageRank();
 }

@@ -26,5 +26,10 @@ public class Job {
     private String Jeducation;
     private int Totalhirecount;
     private String Jexperience;
-    private  String Jprovince;
+    private double JmaxSalary;
+    private double JminSalary;
+    private String Jcompany;
+    private String Jprovince;
+    private String JtypeFather;
+    private String JtypeNow;
 }
