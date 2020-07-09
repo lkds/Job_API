@@ -331,16 +331,16 @@ public class JobBasicController {
         try {
             List<Company> allCom = jm.getSalaryOfProp();
             for (Company c : allCom) {
-                comType.add(c.getJcomType());
-                ratio.add(c.getRadio());
+                comType.add(c.getJcomFinanceStage());
+                // ratio.add(c.getRadio());
                 count.add(c.getCount());
                 Map<String, Object> map = new HashMap<>();
-                map.put("name", c.getJcomType());
+                map.put("name", c.getJcomFinanceStage());
                 map.put("value", c.getCount());
                 data.add(map);
             }
             body.put("companyType", comType);
-            body.put("ration", ratio);
+            // body.put("ration", ratio);
             body.put("count", count);
             body.put("data", data);
             res.setBody(body);
@@ -439,7 +439,7 @@ public class JobBasicController {
             for (Job j : allJob) {
                 topJobs.add(j.getJindustry());
                 jobCount.add(j.getCount());
-                jobRatio.add( new BigDecimal(j.getRatio() * 100).setScale(4, 1).doubleValue());
+                jobRatio.add(new BigDecimal(j.getRatio() * 100).setScale(4, 1).doubleValue());
 
             }
             body.put("topJobs", topJobs);
@@ -493,7 +493,7 @@ public class JobBasicController {
             List<Job> allWords = jm.getWordCloud(jobType, 200);
             for (Job j : allWords) {
                 Map<String, Object> map = new HashMap<>(2);
-                map.put("name", j.getJrequirements());
+                map.put("name", j.getJname());
                 map.put("value", j.getCount());
                 body.add(map);
             }

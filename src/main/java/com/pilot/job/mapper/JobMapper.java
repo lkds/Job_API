@@ -41,7 +41,7 @@ public interface JobMapper {
      * 
      * @return 公司列表
      */
-    @Select("SELECT JcomType,count,Radio,JavSalary FROM Demand2_2")
+    @Select("SELECT JcomFinanceStage,count,JavSalary FROM Demand2_2")
     List<Company> getSalaryOfProp();
 
     /**
@@ -67,7 +67,7 @@ public interface JobMapper {
      * @param jobType 职业类型
      * @return Job列表
      */
-    @Select("SELECT Jrequirements,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc LIMIT #{total}")
+    @Select("SELECT Jindustry,Jname,count FROM Demand5_1 WHERE Jindustry = #{jobType} ORDER BY `count` desc LIMIT #{total}")
     List<Job> getWordCloud(String jobType, int total);
 
     /**

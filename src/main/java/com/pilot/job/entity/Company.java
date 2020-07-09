@@ -16,9 +16,10 @@ public class Company implements Comparable<Company> {
     private double Radio;
     private double JavSalary;
     private String JcomType;
+    private String JcomFinanceStage;
 
     @Override
     public int compareTo(Company o) {
-        return Double.compare(o.JavSalary,this.JavSalary);
+        return Double.compare(o.JavSalary, this.JavSalary);
     }
 }
