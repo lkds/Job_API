@@ -331,7 +331,7 @@ public class JobBasicController {
         try {
             List<Company> allCom = jm.getSalaryOfProp();
             for (Company c : allCom) {
-                comType.add(c.getJcomFinanceStage());
+                comType.add(c.getJcomType());
                 // ratio.add(c.getRadio());
                 count.add(c.getCount());
                 Map<String, Object> map = new HashMap<>();
@@ -582,7 +582,9 @@ public class JobBasicController {
             if (j.getJtypeFather().equals("IT·互联网")) {
                 l1.add(new HashMap<String, Object>() {
                     {
-                        put("name", j.getJtypeNow());
+                        if (j.getJtypeNow() != null) {
+                            put("name", j.getJtypeNow());
+                        }
                         put("value", j.getCount());
                     }
                 });

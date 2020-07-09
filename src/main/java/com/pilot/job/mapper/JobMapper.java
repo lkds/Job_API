@@ -126,4 +126,13 @@ public interface JobMapper {
      */
     @Select("SELECT Jname,JavSalary FROM Demand1_6 ORDER BY JavSalary desc")
     List<Job> getLanguageRank();
+
+    // /**
+    // * 获取互联网的数据
+    // *
+    // * @return
+    // */
+    // @Select("SELECT JtypeFather,JtypeNow,count FROM Demand1_1_2 WHERE JtypeFather
+    // = ''")
+    // List<Job> getInternetJobAmounts();
 }
