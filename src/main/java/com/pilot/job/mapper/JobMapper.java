@@ -55,7 +55,7 @@ public interface JobMapper {
     /**
      * 获取每个地区的top行业
      * 
-     * @param city
+     * @param province
      * @return
      */
     @Select("SELECT Jindustry,Count,Ratio FROM Demand3_2 WHERE Jprovince = #{province} ORDER BY `Count` DESC LIMIT #{t}")

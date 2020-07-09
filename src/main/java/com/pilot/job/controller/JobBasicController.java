@@ -579,7 +579,7 @@ public class JobBasicController {
         List<Map<String, Object>> l2 = new ArrayList<Map<String, Object>>();
         List<Map<String, Object>> l3 = new ArrayList<Map<String, Object>>();
         for (Job j : allJobs) {
-            if (j.getJtypeFather().equals("所有")) {
+            if (j.getJtypeFather().equals("IT·互联网")) {
                 l1.add(new HashMap<String, Object>() {
                     {
                         put("name", j.getJtypeNow());
@@ -603,10 +603,11 @@ public class JobBasicController {
                 }
             }
             if (!find) {
+                int finalI1 = i;
                 l2.add(new HashMap<String, Object>() {
                     {
-                        put("name", l1.get(i).get("name"));
-                        put("value", l1.get(i).get("value"));
+                        put("name", l1.get(finalI1).get("name"));
+                        put("value", l1.get(finalI1).get("value"));
                     }
                 });
             }
@@ -625,10 +626,11 @@ public class JobBasicController {
                 }
             }
             if (!find) {
+                int finalI = i;
                 l3.add(new HashMap<String, Object>() {
                     {
-                        put("name", l1.get(i).get("name"));
-                        put("value", l1.get(i).get("value"));
+                        put("name", l1.get(finalI).get("name"));
+                        put("value", l1.get(finalI).get("value"));
                     }
                 });
             }
