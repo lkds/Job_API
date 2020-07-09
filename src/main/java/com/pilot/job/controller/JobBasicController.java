@@ -244,7 +244,7 @@ public class JobBasicController {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>();
         List education = Arrays.asList("初中","高中","大专","本科","硕士");
-        List experience = Arrays.asList("不限","1","1-3","3-5","5-10","10+");
+        List experience = Arrays.asList("不限","1","1-3","3-5","5-10");
         ArrayList<ArrayList<Object>> salary = new ArrayList<ArrayList<Object>>();
         try {
             ArrayList<Job> jobArr = (ArrayList<Job>) jm.getExpEduSalary();
@@ -278,8 +278,7 @@ public class JobBasicController {
                         exp="3-5";
                     else if(exp.equals("5-10")||exp.equals("5-7")||exp.equals("6-7")||exp.equals("8-9")||exp.equals("8-10"))
                         exp="5-10";
-                    else if(exp.equals("10+"))
-                        exp="10+";
+
                 }
                 x=education.indexOf(j.getJeducation());
                 y=experience.indexOf(exp);
@@ -354,7 +353,7 @@ public class JobBasicController {
         try {
             List<Company> allCom = jm.getSalaryOfProp();
             for (Company c : allCom) {
-                comType.add(c.getJcomType());
+                comType.add(c.getJcomFinanceStage());
                 // ratio.add(c.getRadio());
                 count.add(c.getCount());
                 Map<String, Object> map = new HashMap<>();
