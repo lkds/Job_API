@@ -189,9 +189,10 @@ public class JobBasicController {
             @PathVariable String industry3, @PathVariable String industry4) {
         Result res = new Result();
         Map<String, Object> body = new HashMap<>();
-        List<String> education = Arrays.asList("初中", "高中", "大专", "本科", "硕士", "博士");
+        //
+        List<String> education = Arrays.asList("初中", "高中", "大专", "本科", "硕士");
         List<String> industry = Arrays.asList(industry1, industry2, industry3, industry4);
-        Double[][] avgSalary = new Double[4][6];
+        Double[][] avgSalary = new Double[4][5];
         try {
             List<Job> jobArr = jm.getEducationSalary(industry1, industry2, industry3, industry4);
             int x, y;
@@ -420,7 +421,8 @@ public class JobBasicController {
             for (Job j : allJob) {
                 topJobs.add(j.getJindustry());
                 jobCount.add(j.getCount());
-                jobRatio.add(j.getRatio());
+                jobRatio.add( new BigDecimal(j.getRatio() * 100).setScale(4, 1).doubleValue());
+
             }
             body.put("topJobs", topJobs);
             body.put("jobCount", jobCount);
