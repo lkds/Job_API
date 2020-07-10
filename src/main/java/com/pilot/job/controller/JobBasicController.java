@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class JobBasicController {
     @Autowired
     private JobMapper jm;
-    String color[] = { "#da0d68", "#975e6d", "#e0719c", "#f99e1c", "#ef5a78", "#f7f1bd", "#da1d23", "#dd4c51",
-            "#3e0317" };
+    String color[] = { "#00a8cc", "#0c7b93", "#27496d", "#8566aa", "#6983aa", "#8ec6c5", "#f4ebc1", "#a0c1b8",
+            "#709fb0", "#726a95", "#436f8a", "#438a5e", "#bac964", "#f7fbe1", "#dae1e7", "#00909e", "#27496d",
+            "#142850" };
     int currColor = 0;
 
     public List<Map<String, Object>> reBuild(List<Job> allJob, String father) {
@@ -30,7 +31,12 @@ public class JobBasicController {
             Map<String, Object> m = new HashMap<>();
             if (j.getJtypeFather().equals(father)) {
                 m.put("name", j.getJtypeNow());
-                m.put("itemStyle", color[(currColor++) % color.length]);
+                m.put("itemStyle", new HashMap<String, Object>() {
+                    {
+                        put("color", color[currColor]);
+                    }
+                });
+                currColor = (currColor + 1) % color.length;
                 m.put("value", j.getCount());
                 List<Map<String, Object>> res = reBuild(allJob, j.getJtypeNow());
                 if (res.size() > 0) {
@@ -42,6 +48,11 @@ public class JobBasicController {
         return l;
     }
 
+    /**
+     * 不同岗位薪资
+     * 
+     * @return
+     */
     @RequestMapping("/jobAmounts")
     public Result getJobAmounts() {
         Result res = new Result();
@@ -58,6 +69,11 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同行业平均薪资
+     * 
+     * @return
+     */
     @RequestMapping("/averageSalary")
     public Result getAverageSalary() {
         Result res = new Result();
@@ -140,6 +156,9 @@ public class JobBasicController {
     // return res;
     // }
 
+    /**
+     * 不同岗位学历
+     */
     @RequestMapping("/jobEducation/{industry}")
     public Result getJobEducation(@PathVariable("industry") String industry) {
         Result res = new Result();
@@ -156,41 +175,47 @@ public class JobBasicController {
             List<Job> allJob = jm.getJobEducation(industry);
             for (Job j : allJob) {
                 String edu = j.getJeducation();
-                switch (edu) {
-                    case "高中":
-                        body.set(0, new HashMap<String, Object>() {
-                            {
-                                put("post", j.getJeducation());
-                                put("number", j.getCount());
-                            }
-                        });
-                        break;
-                    case "大专":
-                        body.set(1, new HashMap<String, Object>() {
-                            {
-                                put("post", j.getJeducation());
-                                put("number", j.getCount());
-                            }
-                        });
-                        break;
-                    case "本科":
-                        body.set(2, new HashMap<String, Object>() {
-                            {
-                                put("post", j.getJeducation());
-                                put("number", j.getCount());
-                            }
-                        });
-                        break;
-                    case "硕士":
-                        body.set(3, new HashMap<String, Object>() {
-                            {
-                                put("post", j.getJeducation());
-                                put("number", j.getCount());
-                            }
-                        });
-                        break;
-                    default:
+                try {
+
+                    switch (edu) {
+                        case "高中":
+                            body.set(0, new HashMap<String, Object>() {
+                                {
+                                    put("post", j.getJeducation());
+                                    put("number", j.getCount());
+                                }
+                            });
+                            break;
+                        case "大专":
+                            body.set(1, new HashMap<String, Object>() {
+                                {
+                                    put("post", j.getJeducation());
+                                    put("number", j.getCount());
+                                }
+                            });
+                            break;
+                        case "本科":
+                            body.set(2, new HashMap<String, Object>() {
+                                {
+                                    put("post", j.getJeducation());
+                                    put("number", j.getCount());
+                                }
+                            });
+                            break;
+                        case "硕士":
+                            body.set(3, new HashMap<String, Object>() {
+                                {
+                                    put("post", j.getJeducation());
+                                    put("number", j.getCount());
+                                }
+                            });
+                            break;
+                        default:
+                    }
+                } catch (Exception e) {
+                    continue;
                 }
+
             }
             res.setStatus(1);
             res.setMsg("success");
@@ -202,6 +227,9 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同学历平均薪资
+     */
     @RequestMapping("/educationSalary/{industry1}/{industry2}/{industry3}/{industry4}")
     public Result getEducationSalary(@PathVariable String industry1, @PathVariable String industry2,
             @PathVariable String industry3, @PathVariable String industry4) {
@@ -239,6 +267,11 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 薪资-学历-经验
+     * 
+     * @return
+     */
     @RequestMapping("/expEduSalary")
     public Result getExpEduSalary() {
         Result res = new Result();
@@ -305,6 +338,11 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同规模企业薪资
+     * 
+     * @return
+     */
     @RequestMapping("/salaryOfScale")
     public Result getSalaryOfScale() {
         Result res = new Result();
@@ -337,6 +375,9 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同性质企业
+     */
     @RequestMapping("/salaryOfProp")
     public Result getSalaryOfProp() {
         Result res = new Result();
@@ -370,6 +411,11 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同地区平均薪资
+     * 
+     * @return
+     */
     @RequestMapping("/areaSalary")
     public Result getAreaSalary() {
         Result res = new Result();
@@ -393,6 +439,13 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 比较两个地区的行业分布
+     * 
+     * @param province1
+     * @param province2
+     * @return
+     */
     @RequestMapping("/twoProvinceCount/{province1}/{province2}")
     public Result getTwoProvinceCount(@PathVariable String province1, @PathVariable String province2) {
         Result res = new Result();
@@ -412,7 +465,7 @@ public class JobBasicController {
             for (String s : industries) {
                 Map<String, Object> industry = new HashMap<String, Object>();
                 industry.put("name", s);
-                industry.put("max", 10000);
+                industry.put("max", 6000);
                 typeStander.add(industry);
             }
             int[] value1 = new int[5];
@@ -443,6 +496,13 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     *
+     * 不同地域行业分析
+     *
+     * @param province
+     * @return
+     */
     @RequestMapping("/areaJob/{province}")
     @GetMapping("/areaJob/{province}")
     public Result getAreaJob(@PathVariable("province") String province) {
@@ -472,6 +532,9 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 不同行业需求人数分析
+     */
     @RequestMapping("/jobCount")
     public Result getJobCount() {
         Result res = new Result();
@@ -501,6 +564,12 @@ public class JobBasicController {
         return res;
     }
 
+    /**
+     * 行业需求关键词
+     * 
+     * @param jobType
+     * @return
+     */
     @RequestMapping("/wordCloud/{jobType}")
     public Result getWordCloud(@PathVariable("jobType") String jobType) {
         Result res = new Result();
@@ -572,6 +641,8 @@ public class JobBasicController {
                 language.add(j.getJname());
                 salary.add(new BigDecimal(j.getJavSalary()).setScale(3, 1).doubleValue() * 1000);
             }
+            Collections.reverse(language);
+            Collections.reverse(salary);
             body.put("language", language);
             body.put("salary", salary);
         } catch (Exception e) {
